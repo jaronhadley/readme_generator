@@ -77,35 +77,35 @@ This app is covereved under the ${license}`
 }
 
 // TODO: Create a function to generate markdown for README
-let gitUrl;
 async function getGithubLink(username){
-  const options = {
+  options = {
     hostname: 'api.github.com',
     path: `/users/${username}`,
     headers :{
       'User-Agent': 'jaronhadley'
     }
   }
-  let url = await new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     https.get(options, (res) => {
-    let body = "";
+      let body = "";
 
-    res.on("data", async function(chunk) {
+      res.on("data", function(chunk) {
         body += chunk;
-    });
+      });
 
-    return res.on("end", async function() {
-        try {
-            let json = JSON.parse(body);
-            gitUrl = json.url;
-            return resolve(json.url)
-        } catch (error) {
-            reject(error.message);
-        };
-    });
-  })
+      res.on("end", function() {
+          let json = JSON.parse(body);
+          console.log(json.url)
+          resolve(json.url)
+          });
+    })
 })
 }
+
+async function githubLink(username) {
+  var url = await getGithubLink(username);
+  return url
+} 
 
 function generateMarkdown(data) {
   return `# ${data.title}
@@ -142,10 +142,12 @@ function generateMarkdown(data) {
 
   ## Questions
   
-  ${data.username}, link to [github](${getGithubLink(data.username)}) profile
-  [Contact Us](mailto:${data.email})
+  My github id is ${data.username}, link to [github](${githubLink(data.username)}) profile
+  
+  [Contact Me](mailto:${data.email})
   ---
 `;
 }
+
 
 module.exports = generateMarkdown;
