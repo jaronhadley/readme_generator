@@ -95,7 +95,7 @@ async function getGithubLink(username){
 
       res.on("end", function() {
           let json = JSON.parse(body);
-          console.log(json.url)
+          //console.log(json.url)
           resolve(json.url)
           });
     })
